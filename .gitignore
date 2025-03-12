@@ -1,0 +1,14 @@
+echo "target/
+*.log
+*.class
+.DS_Store
+*.jar
+*.war
+*.iml
+/venv
+*.env
+/.idea
+/.vscode
+/build/
+/out/
+" > .gitignore

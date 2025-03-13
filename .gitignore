@@ -6,6 +6,7 @@ echo "target/
 *.war
 *.iml
 /venv
+/target
 *.env
 /.idea
 /.vscode

@@ -9,21 +9,24 @@ Before setting up the project, ensure you have the following installed:
 - **Maven**
 - **IntelliJ IDEA** (or another preferred IDE)
 
-### Database Setup (MySQL with Docker)
+---
+
+##  Database Setup (MySQL with Docker)
+
 To set up the MySQL database, follow these steps:
 
 1. **Start the database container**
-   ```bash
+   ```sh
    docker-compose up -d
    ```
 2. **Verify the database is running**
-   ```bash
+   ```sh
    docker ps
    ```
    The container named `myhotel-mysql` should be running.
 
 3. **Connect to MySQL inside the container**
-   ```bash
+   ```sh
    docker exec -it myhotel-mysql mysql -u user -p
    ```
    Enter the password: `password`
@@ -37,7 +40,10 @@ To set up the MySQL database, follow these steps:
 
 The database is now ready to be used in the application.
 
-### Environment Configuration
+---
+
+## Environment Configuration
+
 Create an `.env` file in the project root with the following content (if needed):
 
 ```
@@ -48,10 +54,135 @@ DB_USER=user
 DB_PASSWORD=password
 ```
 
-### Next Steps
-- Configure Spring Boot to connect to the database.
-- Implement API endpoints for managing vehicles and employee data.
+Also, make sure that `application.properties` or `application.yml` contains the correct database configuration:
+
+```properties
+spring.datasource.url=jdbc:mysql://${DB_HOST}:${DB_PORT}/${DB_NAME}
+spring.datasource.username=${DB_USER}
+spring.datasource.password=${DB_PASSWORD}
+spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
+spring.jpa.hibernate.ddl-auto=update
+spring.jpa.database-platform=org.hibernate.dialect.MySQL8Dialect
+```
 
 ---
 
-This is the initial setup for the README. As we progress, we will add more sections including how to run the Spring Boot application, API documentation, and testing instructions.
+## Running the Application
+
+### Option 1: Running Locally
+
+1. **Clone the repository**
+   ```sh
+   git clone https://github.com/your-username/backend-tech-challenge-myhotel.git
+   cd backend-tech-challenge-myhotel
+   ```
+
+2. **Build the project**
+   ```sh
+   mvn clean install
+   ```
+
+3. **Run the Spring Boot application**
+   ```sh
+   mvn spring-boot:run
+   ```
+
+The application will be available at:  
+ `http://localhost:8080/`
+
+---
+
+### Option 2: Running with Docker
+
+If you prefer to run everything inside Docker containers:
+
+1. **Build and start the services**
+   ```sh
+   docker-compose up --build
+   ```
+
+   This will:
+   - Start a MySQL container.
+   - Build and run the backend.
+
+2. **Verify the application is running**
+   ```
+   http://localhost:8080/
+   ```
+
+3. **Stop the containers**
+   ```sh
+   docker-compose down
+   ```
+
+   If you also want to remove database data:
+   ```sh
+   docker-compose down -v
+   ```
+
+---
+
+## Running Tests
+
+To run all tests:
+
+```sh
+mvn clean test
+```
+
+If you want to compile without running tests:
+
+```sh
+mvn clean install -DskipTests
+```
+
+---
+
+## API Endpoints
+
+### Employee Endpoints
+
+| Method | Endpoint | Description |
+|--------|---------|-------------|
+| `GET`  | `/employees/salary-segments` | Get salary segments |
+| `GET`  | `/employees/top-paid` | Get top-paid employees by department |
+| `GET`  | `/employees/experienced-managers` | Get experienced managers |
+| `GET`  | `/employees/salary-stats/country` | Get salary statistics by country |
+
+Example request:
+
+```sh
+curl -X GET http://localhost:8080/employees/salary-segments
+```
+
+---
+
+## Project Structure
+
+```
+backend-tech-challenge-myhotel/
+│── src/
+│   ├── main/
+│   │   ├── java/com/myhotel/employees/   # Application source code
+│   │   ├── resources/                     # Configurations (application.properties)
+│   ├── test/                              # Test cases
+│
+├── Dockerfile
+├── docker-compose.yml
+├── pom.xml
+├── README.md
+```
+
+---
+
+## Notes
+
+- If the application fails to connect to MySQL, ensure the database container is running.
+- If there are dependency issues, try running:
+  ```sh
+  mvn clean install -U
+  ```
+- For any issues or suggestions, feel free to open an issue in the repository.
+
+---
+
